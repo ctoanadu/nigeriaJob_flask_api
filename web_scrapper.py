@@ -3,6 +3,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import pandas as pd 
 from collections import defaultdict
+import re
 
 
 headers={'UserAgent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
@@ -10,7 +11,10 @@ headers={'UserAgent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKi
 
 
 def get_records():
-
+    """ This function makes a hhtp request to the website
+    scrappoing the two pages that displayed after the search and 
+    scrapes the relavnt data.
+    """
     #first Page scrape
     url='https://www.nigeriajob.com/job-vacancies-search-nigeria/?f%5B0%5D=im_field_offre_metiers%3A31'
     response=requests.get(url, headers=headers)
@@ -33,6 +37,8 @@ inside=record.h5.a
 #inside=card_one.h5.a
 
 def get_info(record):
+    """Extracting the different information form the first data and categorising 
+    them into different features """
     inside=record.h5.a
     #url
     try:
@@ -79,6 +85,7 @@ def get_info(record):
     
     #technology
     technology=record.find_all('div','badge')
+    technology = re.findall(r'<div class="badge">(.+?)</div>', str(technology))
     
     
     dt=[url_link,job_title,company_name,job_description,location,date_posted,technology]
@@ -87,6 +94,10 @@ def get_info(record):
 
 #get_info(card_one)
 def getAllData():
+    """
+    Create a loop that append the rest of the data into
+    a nested list
+    """
     data=[]
     for i in records:
         record=get_info(i)
