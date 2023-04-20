@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>BeeKin Job API Documentation</title>
+	<style>
+		h1, h2, h3 {
+			margin-top: 40px;
+			margin-bottom: 10px;
+		}
+		h1 {
+			font-size: 36px;
+		}
+		h2 {
+			font-size: 28px;
+		}
+		h3 {
+			font-size: 24px;
+		}
+		p {
+			font-size: 16px;
+			line-height: 1.5;
+		}
+		code {
+			font-size: 14px;
+			padding: 2px 4px;
+			background-color: #f7f7f7;
+			border-radius: 4px;
+			font-family: Consolas, monospace;
+		}
+		table {
+			border-collapse: collapse;
+			margin-top: 20px;
+			margin-bottom: 40px;
+		}
+		th, td {
+			padding: 10px;
+			border: 1px solid #ddd;
+		}
+		th {
+			background-color: #f7f7f7;
+		}
+	</style>
+</head>
+<body>
+	<h1>BeeKin Job API Documentation</h1>
+	
+	<h2>Introduction</h2>
+	<p>The BeeKin Job API allows users to retrieve information about job postings on the BeeKin job board. The API provides endpoints for filtering, sorting, and pagination of job postings.</p>
+	
+	<h2>Authentication</h2>
+	<p>The BeeKin Job API does not require authentication.</p>
+	
+	<h2>Base URL</h2>
+	<p>All API endpoints are relative to the following base URL:</p>
+	<code>http://localhost:5000</code>
+	
+	<h2>Endpoints</h2>
+	
+	<h3>Filter Jobs</h3>
+	<p>Retrieves a list of job postings based on location and technology filters.</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Endpoint</th>
+				<th>HTTP Method</th>
+				<th>Parameters</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>/jobs/filter</td>
+				<td>GET</td>
+				<td>location (string, optional), technology (string, optional)</td>
+				<td>Retrieves a list of job postings based on the specified location and/or technology filters. If no filters are specified, returns all job postings.</td>
+			</tr>
+		</tbody>
+	</table>
+	<h4>Example Request</h4>
+	<code>GET /jobs/filter?location=Lagos&technology=Python</code>
+	<h4>Example Response</h4>
+	<code>
+	{
+		"data": [
+			{
+				"id": 1,
+				"url_link": "https://nigerianjobs.com/job/1",
+				"job_title": "Software Engineer",
+				"company_name": "Apple",
+				"job_description": "We are looking for an experienced developer.",
+				"date_posted": "2022-01-01 12:00:00",
+				"technology": "Python, Flask",
+				"location_name": "Lagos"
+			},
+			{
+				"id": 2,
+				"url

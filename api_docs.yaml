@@ -1,0 +1,127 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "Beekin Job API"
+  description: "API for accessing job information on Beekin"
+  contact:
+    name: "Your Name"
+    email: "youremail@example.com"
+    url: "https://example.com"
+servers:
+  - url: "http://localhost:5000"
+paths:
+  /jobs/filter:
+    get:
+      summary: "Filter jobs by location and/or technology"
+      description: "Get a list of jobs filtered by location and/or technology"
+      parameters:
+        - in: query
+          name: location
+          schema:
+            type: string
+          description: "Location to filter jobs by"
+        - in: query
+          name: technology
+          schema:
+            type: string
+          description: "Technology to filter jobs by"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "Unique identifier for the job"
+                        url_link:
+                          type: string
+                          description: "URL link to the job posting"
+                        job_title:
+                          type: string
+                          description: "Title of the job"
+                        company_name:
+                          type: string
+                          description: "Name of the company"
+                        job_description:
+                          type: string
+                          description: "Description of the job"
+                        date_posted:
+                          type: string
+                          description: "Date the job was posted"
+                        technology:
+                          type: string
+                          description: "Technology used in the job"
+                        location_name:
+                          type: string
+                          description: "Location of the job"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+    post:
+      summary: "Create a new job"
+      description: "Create a new job"
+      requestBody:
+        description: "Job object to be created"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url_link:
+                  type: string
+                  description: "URL link to the job posting"
+                job_title:
+                  type: string
+                  description: "Title of the job"
+                company_name:
+                  type: string
+                  description: "Name of the company"
+                job_description:
+                  type: string
+                  description: "Description of the job"
+                date_posted:
+                  type: string
+                  format: date-time
+                  description: "Date the job was posted"
+                technology:
+                  type: string
+                  description: "Technology used in the job"
+                location_name:
+                  type: string
+                  description: "Location of the job"
+              required:
+                - url_link
+                - job_title
+                - company_name
+                - job_description
+                - date_posted
+                - technology
+                - location_name
+      responses:
+        "201":
+          description: "Job created successfully"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+  /jobs/sort:
+    get:
+      summary: "Sort jobs by a given field"
+      description: "Get a list of jobs sorted by a given field"
+      parameters:
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+          description: "Field to sort jobs by"
+      responses
