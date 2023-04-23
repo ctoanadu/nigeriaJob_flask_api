@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_paginate import Pagination, get_page_parameter
-
 
 app=Flask(__name__)
 
@@ -10,23 +8,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] ='postgresql://user_new:Password1@localhos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 
-
-
 db=SQLAlchemy(app)
 
 class Job(db.Model):
     __tablename__='beekin_job'
 
     id=db.Column(db.Integer,primary_key=True)
-    url_link=db.Column(db.String(255), nullable=False)
-    job_title=db.Column(db.String(255), nullable=False)
-    company_name=db.Column(db.String(255), nullable=False)
-    job_description=db.Column(db.String(255), nullable=False)
-    date_posted=db.Column(db.DateTime(255), nullable=False)
-    technology=db.Column(db.String(255), nullable=False)
-    location_name=db.Column(db.String(255), nullable=False)
+    url_link=db.Column(db.String(255))
+    job_title=db.Column(db.String(255))
+    company_name=db.Column(db.String(255))
+    job_description=db.Column(db.String(255))
+    date_posted=db.Column(db.DateTime(255))
+    technology=db.Column(db.String(255))
+    location_name=db.Column(db.String(255))
 
-    def __init__(self,url_link,job_title,company_name,job_description,date_posted,technology, location_name) -> None:
+    def __init__(self,url_link,job_title,company_name,job_description,date_posted,technology,location_name) -> None:
         self.url_link=url_link
         self.job_title=job_title
         self.company_name=company_name
@@ -47,20 +43,28 @@ class Job(db.Model):
             'location_name': self.location_name
         }
         
+@app.route('/jobs', methods=['GET'])
+def get_jobs():
+    query=Job.query
+    jobs=query.all()
+    results=[job.to_dict() for job in jobs]
+    data={'data':results}
+    return jsonify(data)
+       
 
 @app.route('/jobs/filter', methods=['GET'])
 def filter_jobs():
     """Get method that filters job query by technology and location"""
-    location = request.args.get('location')
+    location_name = request.args.get('location_name')
     technology=request.args.get('technology')
 
-    if not location and not technology:
-        print('no input was provided')
+    if not location_name and not technology:
+        raise KeyError
 
     query=Job.query
 
-    if location:
-        query=query.filter(Job.location_name.ilike(f'%{location}%'))
+    if location_name:
+        query=query.filter(Job.location_name.ilike(f'%{location_name}%'))
 
     if technology:
         query=query.filter(Job.technology.ilike(f'%{technology}%'))
@@ -77,7 +81,7 @@ def sort_jobs():
     sort_by =request.args.get('sort_by')
 
     query=Job.query.order_by(sort_by)
-    jobs=query.all()
+    jobs=query
     results=[job.to_dict() for job in jobs]
     data={'data':results}
     return jsonify(data)
@@ -85,12 +89,10 @@ def sort_jobs():
 @app.route('/jobs/paginate', methods=['GET'])
 def paginator():
     """Get method to provide pagination to the app"""
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per-page', 1, type=int)
-
-    query=Job.query
-    jobs=query.paginate(page,per_page,error_out=False)
-
+    page=request.args.get('page', 1, type = int)
+    per_page=request.args.get('per_page', 20, type = int)
+    jobs = Job.query.paginate(page=page, per_page=per_page,error_out=False)
+    
     results=[job.to_dict() for job in jobs.items]
     data={
         'data':results,

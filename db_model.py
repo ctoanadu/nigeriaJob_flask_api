@@ -7,6 +7,11 @@ engine = create_engine('postgresql://user_new:Password1@localhost:5432/beekin_db
 
 
 def main():
+    '''
+    The function starts the scrapping job, perform normalization to flatten 
+    nested data within the dataframe. A table is created in the database 
+    and the necessary data is exported.
+    '''
 
     #create a database table to from datagrame
     df = pd.DataFrame(create_dict())
@@ -31,7 +36,7 @@ def main():
     #rename column 
     df_final.rename(columns={'row_num': 'id'}, inplace=True)
 
-    #Save create table in postgres and export dataframe table.
+    #Create table in postgres and export dataframe table.
     df_final.to_sql('beekin_job', engine,if_exists='replace')  
 
     return df_final

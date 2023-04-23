@@ -21,7 +21,7 @@ def test_get_records():
     assert len(rec) > 0
 
 def test_get_info(records):
-    assert len(get_info(records)) 
+    assert len(get_info(records))==7 
 
 def test_getAllData(records):
     output=getAllData()

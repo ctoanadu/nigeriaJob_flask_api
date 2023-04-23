@@ -5,7 +5,7 @@ import pandas as pd
 from collections import defaultdict
 import re
 
-
+#UserAgent 
 headers={'UserAgent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
 }
 
@@ -13,13 +13,14 @@ headers={'UserAgent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKi
 def get_records():
     """ This function makes a hhtp request to the website
     scrappoing the two pages that displayed after the search and 
-    scrapes the relavnt data.
+    scrapes the relevnt data.
     """
     #first Page scrape
     url='https://www.nigeriajob.com/job-vacancies-search-nigeria/?f%5B0%5D=im_field_offre_metiers%3A31'
     response=requests.get(url, headers=headers)
     soup=BeautifulSoup(response.text,'html.parser')
     outer_point=soup.find_all('div','col-lg-5 col-md-5 col-sm-5 col-xs-12 job-title')
+
     #Second Scrape scrape
     url=url+'&page=1'
     response=requests.get(url, headers=headers)
@@ -30,19 +31,19 @@ def get_records():
     outer_point.extend(outer_point_2)
     return outer_point
 
+#All job post
 records=get_records()
+
+#the first job post
 record=records[0]
-inside=record.h5.a
-#card_one=outer_point[0]
-#inside=card_one.h5.a
 
 def get_info(record):
     """Extracting the different information form the first data and categorising 
-    them into different features """
-    inside=record.h5.a
+    them into different columns """
+    
     #url
     try:
-        href=inside.get('href')
+        href=record.h5.a.get('href')
         link='https://www.nigeriajob.com'
         url_link=link+href
     except AttributeError:
@@ -51,7 +52,7 @@ def get_info(record):
    
     #job
     try:
-        job_title=inside.text
+        job_title=record.h5.a.text
     except AttributeError:
         job_title=''
     job_title
@@ -82,17 +83,15 @@ def get_info(record):
     except AttributeError:
         date_posted=''
     
-    
     #technology
     technology=record.find_all('div','badge')
     technology = re.findall(r'<div class="badge">(.+?)</div>', str(technology))
-    
     
     dt=[url_link,job_title,company_name,job_description,location,date_posted,technology]
     return dt
 
 
-#get_info(card_one)
+
 def getAllData():
     """
     Create a loop that append the rest of the data into
@@ -100,20 +99,23 @@ def getAllData():
     """
     data=[]
     for i in records:
-        record=get_info(i)
-        data.append(record)
+        r=get_info(i)
+        data.append(r)
     return data
 
 
 def create_dict():
+    """
+    Create a column for the data, and creating a dictionary
+    """
     spec=['url_link','job_title','company_name','job_description','location','date_posted','technologies']
-    spec_dic_list=defaultdict(list)
+    spec_dic_list=[]
 
     all_post=getAllData()
-    for i in range(len(all_post)):
-        p=(list(zip(spec,all_post[i])))
-        for j in p:
-            spec_dic_list[j[0]].append(j[1])
+    for i in all_post:
+        p=(dict(zip(spec,i)))
+        
+        spec_dic_list.append(p)
     return spec_dic_list
 
 
