@@ -108,15 +108,17 @@ def create_dict():
     """
     Create a column for the data, and creating a dictionary
     """
+    
     spec=['url_link','job_title','company_name','job_description','location','date_posted','technologies']
-    spec_dic_list=[]
+    spec_dic_list=defaultdict(list)
 
     all_post=getAllData()
-    for i in all_post:
-        p=(dict(zip(spec,i)))
-        
-        spec_dic_list.append(p)
+    for i in range(len(all_post)):
+        p=(list(zip(spec,all_post[i])))
+        for j in p:
+            spec_dic_list[j[0]].append(j[1])
     return spec_dic_list
+
 
 
 
