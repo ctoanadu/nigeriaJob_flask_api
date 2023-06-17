@@ -3,3 +3,4 @@ Flask==2.2.3
 pytest==7.2.1
 Flask-SQLAlchemy
 requests
+beautifulsoup4
