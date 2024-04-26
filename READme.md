@@ -69,5 +69,5 @@ This will execute the unit tests defined in the `test_scraper.py` file to ensure
 - The scraped data may contain nested features in the "technology" and "location" columns. You may need to unnest these columns for easier querying and analysis. Consider implementing this transformation in the `db_model.py` script or within the Flask application.
 - Ensure that your system meets all dependencies and requirements mentioned above before running the application and tests.
 
-Feel free to reach out if you encounter any issues or have further questions!
+Feel free to reach out if you encounter any issues or have further questions.
 
